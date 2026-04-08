@@ -40,7 +40,7 @@ public class ExportPDFServlet extends HttpServlet {
             con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/timetable_db",
                     "root",
-                    "2772006");
+                    "your password");
 
             String query = "SELECT c.class_name, t.day, t.time_slot, "
                     + "s.subject_name, f.faculty_name, t.room_no "
