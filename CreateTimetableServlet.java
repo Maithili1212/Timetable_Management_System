@@ -22,7 +22,7 @@ public class CreateTimetableServlet extends HttpServlet {
             Connection con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/timetable_db",
                     "root",
-                    "2772006");
+                    "your password");
 
             // ✅ GET DATA SAFELY
             int class_id = Integer.parseInt(request.getParameter("class_id"));
