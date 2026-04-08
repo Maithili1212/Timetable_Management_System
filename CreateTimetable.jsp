@@ -109,7 +109,7 @@ Class.forName("com.mysql.cj.jdbc.Driver");
 con = DriverManager.getConnection(
 "jdbc:mysql://localhost:3306/timetable_db",
 "root",
-"2772006");
+"your password");
 
 st = con.createStatement();
 %>
