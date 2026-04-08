@@ -23,7 +23,7 @@ public class AutoGenerateServlet extends HttpServlet {
             Connection con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/timetable_db",
                     "root",
-                    "2772006");
+                    "your password");
 
             String[] days = {"Mon","Tue","Wed","Thu","Fri"};
             String[] times = {"9-10","10-11","11-12","1-2","2-3"};
