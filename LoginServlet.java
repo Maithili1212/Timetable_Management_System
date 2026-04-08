@@ -23,7 +23,7 @@ public class LoginServlet extends HttpServlet {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/timetable_db", "root", "2772006");
+                    "jdbc:mysql://localhost:3306/timetable_db", "root", "your password");
 
             PreparedStatement ps = con.prepareStatement(
                     "SELECT * FROM admin WHERE username=? AND password=?");
