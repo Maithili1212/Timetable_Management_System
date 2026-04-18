@@ -15,7 +15,7 @@ public class DBConnection {
             con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/timetable_db",
                     "root",
-                    "2772006");
+                    "your password");
 
             System.out.println("Database Connected");
 
