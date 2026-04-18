@@ -26,7 +26,7 @@ public class SubjectServlet extends HttpServlet {
             Connection con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/timetable_db",
                     "root",
-                    "2772006");
+                    "your password");
 
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO subject(subject_name, faculty_id, hours_per_week) VALUES(?,?,?)");
