@@ -1,6 +1,5 @@
 <%@ page import="java.sql.*, com.timetable.DBConnection" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,7 +48,6 @@
             background: white;
             padding: 30px;
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: var(--card-shadow);
             margin-bottom: 30px;
         }
@@ -76,7 +74,6 @@
         .dataTables_filter { display: none; }
     </style>
 </head>
-
 <body>
 
 <nav class="navbar navbar-expand-lg sticky-top">
@@ -85,38 +82,35 @@
             <span class="brand-icon"><i class="bi bi-grid-fill"></i></span>
             <span style="font-weight: 800; letter-spacing: -0.5px; color: var(--text-main);">SCHEDULY</span>
         </a>
-
-        <div class="ms-auto d-flex align-items-center">
-            <div class="dropdown">
-                <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    <span class="text-end me-3 d-none d-md-flex flex-column justify-content-center">
-                        <span class="small fw-bold text-dark" style="line-height: 1;">Admin User</span>
-                        <span class="text-muted" style="font-size: 0.7rem;">Super Admin</span>
-                    </span>
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff" class="rounded-circle border" width="38">
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 rounded-4">
-                    <li><a class="dropdown-item py-2" href="profile.jsp"><i class="bi bi-person me-2"></i> Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item py-2 text-danger fw-bold" href="LogoutServlet"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
-                </ul>
-            </div>
-        </div>
     </div>
 </nav>
 
 <div class="container-fluid">
     <div class="row">
-
         <div class="col-lg-2 col-md-3 col-12 p-0 border-end" style="background: white; min-height: calc(100vh - 70px);">
             <%@ include file="common/sidebar.jsp" %>
         </div>
 
         <div class="col-lg-10 col-md-9 col-12 p-4 p-md-5">
+            
+            <%-- Alert Messages --%>
+            <% 
+                String msg = request.getParameter("msg");
+                if("approved".equals(msg)) { %>
+                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i> Swap request has been <strong>approved</strong> and updated.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            <% } else if("rejected".equals(msg)) { %>
+                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4" role="alert">
+                        <i class="bi bi-x-circle-fill me-2"></i> Swap request has been <strong>rejected</strong>.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            <% } %>
 
             <div class="row mb-4">
                 <div class="col-12">
-                    <h2 class="fw-800" style="font-weight: 800; color: var(--text-main);">Swap Request Management</h2>
+                    <h2 style="font-weight: 800; color: var(--text-main);">Swap Request Management</h2>
                     <p class="text-muted">Review and process lecture exchange requests from faculty members.</p>
                 </div>
             </div>
@@ -140,7 +134,7 @@
                     <table id="myTable" class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>Request ID</th>
+                                <th>ID</th>
                                 <th>Schedule Info</th>
                                 <th>From Faculty</th>
                                 <th>To Faculty</th>
@@ -152,7 +146,6 @@
                         <tbody>
                         <%
                         try (Connection con = DBConnection.getConnection()) {
-                            // Joining with faculty, subject, and time_slot for a better UI
                             String sql = "SELECT sr.*, f1.faculty_name as from_name, f2.faculty_name as to_name, " +
                                          "s.subject_name, t.day_of_week, ts.start_time " +
                                          "FROM swap_requests sr " +
@@ -184,21 +177,25 @@
                                 <td><span class="status-badge <%=badgeClass%>"><%=status%></span></td>
                                 <td class="text-end">
                                     <% if("Pending".equalsIgnoreCase(status)) { %>
-                                        <a href="ApproveSwap?id=<%=rs.getInt("request_id")%>" class="btn btn-success btn-action me-1">
+                                        <a href="${pageContext.request.contextPath}/ApproveSwap?id=<%=rs.getInt("request_id")%>" 
+                                           class="btn btn-success btn-action me-1" 
+                                           onclick="return confirm('Approve this swap request?')">
                                             <i class="bi bi-check-lg"></i>
                                         </a>
-                                        <a href="RejectSwap?id=<%=rs.getInt("request_id")%>" class="btn btn-danger btn-action">
+                                        <a href="${pageContext.request.contextPath}/RejectSwap?id=<%=rs.getInt("request_id")%>" 
+                                           class="btn btn-danger btn-action"
+                                           onclick="return confirm('Reject this swap request?')">
                                             <i class="bi bi-x-lg"></i>
                                         </a>
                                     <% } else { %>
-                                        <span class="text-muted small fw-bold">PROCESSED</span>
+                                        <span class="text-muted small fw-bold"><i class="bi bi-lock-fill me-1"></i>PROCESSED</span>
                                     <% } %>
                                 </td>
                             </tr>
                         <%
                             }
                         } catch(Exception e) { 
-                            out.println("<tr><td colspan='7' class='text-danger'>Error loading requests.</td></tr>");
+                            out.println("<tr><td colspan='7' class='text-center py-4 text-danger'>Error: " + e.getMessage() + "</td></tr>");
                         }
                         %>
                         </tbody>
@@ -209,9 +206,8 @@
     </div>
 </div>
 
-<%@ include file="common/footer.jsp" %>
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
@@ -219,7 +215,7 @@
 $(document).ready(function() {
     var table = $('#myTable').DataTable({
         pageLength: 10,
-        dom: 'rtip', // Hides default search box
+        dom: 'rtip',
         language: {
             paginate: {
                 next: '<i class="bi bi-chevron-right"></i>',
